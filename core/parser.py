@@ -36,49 +36,42 @@ class Parser:
     def parse(html_raw: str) -> Dict:
         html_tree = html.fromstring(html_raw)
         return {
+            "title": Parser.get_title(html_tree),
+            "author_link": Parser.get_author(html_tree),
             "views": Parser.get_views(html_tree),
             "comments": Parser.get_comments(html_tree),
             "date": Parser.get_date(html_tree),
             "likes": Parser.get_likes(html_tree),
             "dislikes": Parser.get_dislikes(html_tree),
-            "found_video_ids": Parser.get_video_ids(html_tree),
+            "found_video_ids": Parser.get_video_ids(html_raw),
         }
 
     @staticmethod
     @reliable
     def get_views(html_tree: HtmlElement) -> int:
-        views_tag = Parser.__get_tag_by_xpath(
-            html_tree, Parser.views_xpath
-        )
+        views_tag = Parser.__get_tag_by_xpath(html_tree, Parser.views_xpath)
         views_raw = views_tag.text
         views = int("".join(filter(str.isdecimal, views_raw)))
         return views
 
     @staticmethod
     @reliable
-    def get_author(html_tree: HtmlElement) -> (str, str):
-        author_tag = Parser.__get_tag_by_xpath(
-            html_tree, Parser.author_xpath
-        )
-        author_name = author_tag.text
+    def get_author(html_tree: HtmlElement) -> str:
+        author_tag = Parser.__get_tag_by_xpath(html_tree, Parser.author_xpath)
         author_link = author_tag.attrib["href"]
-        return author_name, author_link
+        return author_link
 
     @staticmethod
     @reliable
     def get_title(html_tree: HtmlElement) -> str:
-        title_tag = Parser.__get_tag_by_xpath(
-            html_tree, Parser.title_xpath
-        )
+        title_tag = Parser.__get_tag_by_xpath(html_tree, Parser.title_xpath)
         title = title_tag.text
         return title
 
     @staticmethod
     @reliable
     def get_comments(html_tree: HtmlElement) -> int:
-        comments_tag = Parser.__get_tag_by_xpath(
-            html_tree, Parser.comments_xpath
-        )
+        comments_tag = Parser.__get_tag_by_xpath(html_tree, Parser.comments_xpath)
         comments_raw = comments_tag.text
         comments = int("".join(filter(str.isdecimal, comments_raw)))
         return comments
@@ -86,9 +79,7 @@ class Parser:
     @staticmethod
     @reliable
     def get_date(html_tree: HtmlElement) -> str:
-        date_tag = Parser.__get_tag_by_xpath(
-            html_tree, Parser.date_xpath
-        )
+        date_tag = Parser.__get_tag_by_xpath(html_tree, Parser.date_xpath)
         date_raw = date_tag.text
         # TODO: Доделать обработку теста
         return date_raw
@@ -112,7 +103,6 @@ class Parser:
         return grades
 
     @staticmethod
-    @reliable
     def get_video_ids(html_raw: str) -> Set[str]:
         return set(re.findall(r"/watch\?v=(.{11})", html_raw))
 

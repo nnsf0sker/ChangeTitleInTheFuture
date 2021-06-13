@@ -22,10 +22,24 @@ class Crawler:
                 parsed_info = Parser.parse(html_raw)
                 time.sleep(10)
                 # TODO: Доделать логику
-                parsed_found_video_ids = parsed_info["found_video_ids"]
-                parsed_likes = parsed_info["likes"]
-                parsed_dislikes = parsed_info["dislikes"]
+                title = parsed_info["title"]
+                author_link = parsed_info["author_link"]
+                found_video_ids = parsed_info["found_video_ids"]
+                views = parsed_info["views"]
+                likes = parsed_info["likes"]
+                dislikes = parsed_info["dislikes"]
+                comments = parsed_info["comments"]
+                results_file.writelines(
+                    f"{current_id}, {views}, {likes}, {dislikes}, {comments}, {title}, {author_link}"
+                )
+                print(f"{current_id}, {views}, {likes}, {dislikes}, {comments}, {title}, {author_link}")
                 self.__processed_ids.add(current_id)
+                self.__main_queue.update(
+                    filter(
+                        lambda video_id: video_id not in self.__processed_ids,
+                        found_video_ids,
+                    )
+                )
 
     @staticmethod
     def __set_driver():

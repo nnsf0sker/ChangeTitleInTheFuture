@@ -19,7 +19,10 @@ html_tree = html.fromstring(html_raw)
 
 
 def test_get_author():
-    assert parcer.get_author(html_tree) == ("Luis Fonsi", "/channel/UCxoq-PAQeAdk_zyg8YS0JqA")
+    assert parcer.get_author(html_tree) == (
+        "Luis Fonsi",
+        "/channel/UCxoq-PAQeAdk_zyg8YS0JqA",
+    )
 
 
 def test_get_views():
