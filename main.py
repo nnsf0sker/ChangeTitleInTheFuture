@@ -4,7 +4,7 @@ import time
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 
-from core.youtube_page_parser import YouTubePageParser
+from core.parser import Parser
 
 processed_ids = set()
 
@@ -23,11 +23,13 @@ with open("results.csv", "a") as f:
             driver.get(url)
             time.sleep(10)
             html_raw = driver.page_source
-            parsed_info = YouTubePageParser.parse(html_raw)
-            
-        rate = likes/dislikes
+            parsed_info = Parser.parse(html_raw)
+
+        rate = likes / dislikes
         if rate > 75:
-            print(f"[GOOD URL] {url} with [{likes} likes], [{dislikes} dislikes] and [{round(rate, 1)} rate]")
+            print(
+                f"[GOOD URL] {url} with [{likes} likes], [{dislikes} dislikes] and [{round(rate, 1)} rate]"
+            )
             f.writelines(
                 f"[GOOD URL], {url}, [{likes} likes] [{dislikes} dislikes] [{round(rate, 1)} rate]\n"
             )
