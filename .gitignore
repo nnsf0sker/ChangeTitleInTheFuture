@@ -1,3 +1,5 @@
+.idea/
+
 # Webdriver logs
 geckodriver.log
 

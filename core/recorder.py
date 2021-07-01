@@ -1,12 +1,14 @@
 import sqlite3
+from sqlite3 import Cursor
+from pathlib import Path
 
 from retry import retry
 
 
-class ResultsManager:
-    def __init__(self, db_name: str):
-        self.__db_name = db_name
-        self.__connection = self.__establish_connection(self.__db_name)
+class Recorder:
+    def __init__(self, db_path: Path):
+        self.__db_path = db_path
+        self.__cursor = self.__establish_connection(self.__db_path)
 
     def record(
         self,
@@ -19,14 +21,14 @@ class ResultsManager:
         likes: int,
         dislikes: int,
     ):
-        self.__connection.execute(
+        self.__cursor.execute(
             "INSERT INTO videos (id, title, author_link, views, comments, date, likes, dislikes) "
             f"VALUES ('{video_id}', '{title}', '{author_link}', {views}, {comments}, '{date}', {likes}, {dislikes});"
         )
 
     @staticmethod
     @retry(tries=5, delay=1, backoff=2)
-    def __establish_connection(db_name: str):
+    def __establish_connection(db_name: Path) -> Cursor:
         connection = sqlite3.connect(db_name)
         connection.execute(
             "CREATE TABLE IF NOT EXISTS videos ("

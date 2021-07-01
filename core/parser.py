@@ -58,8 +58,8 @@ class Parser:
     @reliable
     def get_author(html_tree: HtmlElement) -> str:
         author_tag = Parser.__get_tag_by_xpath(html_tree, Parser.author_xpath)
-        author_link = author_tag.attrib["href"]
-        return author_link
+        author = author_tag.attrib["href"]
+        return author
 
     @staticmethod
     @reliable

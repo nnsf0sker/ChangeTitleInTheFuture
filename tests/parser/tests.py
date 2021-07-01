@@ -4,13 +4,13 @@ from lxml import html
 
 from core.parser import Parser
 
-current_dir = Path() / "tests" / "unit" / "sample_page.html"
+sample_page_path = Path(__file__).parent / "sample_page.html"
 
-with open(current_dir, "r") as f:
+with open(sample_page_path, "r") as f:
     html_raw = f.read()
 
 
-parcer = Parser()
+parser = Parser()
 html_tree = html.fromstring(html_raw)
 
 
@@ -19,18 +19,15 @@ html_tree = html.fromstring(html_raw)
 
 
 def test_get_author():
-    assert parcer.get_author(html_tree) == (
-        "Luis Fonsi",
-        "/channel/UCxoq-PAQeAdk_zyg8YS0JqA",
-    )
+    assert parser.get_author(html_tree) == "/channel/UCxoq-PAQeAdk_zyg8YS0JqA"
 
 
 def test_get_views():
-    assert parcer.get_views(html_tree) == 7393954207
+    assert parser.get_views(html_tree) == 7393954207
 
 
 def test_get_comments():
-    assert parcer.get_comments(html_tree) == 4082675
+    assert parser.get_comments(html_tree) == 4082675
 
 
 # def test_get_date():
@@ -38,8 +35,8 @@ def test_get_comments():
 
 
 def test_get_likes():
-    assert parcer.get_likes(html_tree) == 44515968
+    assert parser.get_likes(html_tree) == 44515968
 
 
 def test_get_dislikes():
-    assert parcer.get_dislikes(html_tree) == 5055564
+    assert parser.get_dislikes(html_tree) == 5055564
