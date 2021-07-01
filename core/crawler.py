@@ -32,7 +32,9 @@ class Crawler:
                 results_file.writelines(
                     f"{current_id}, {views}, {likes}, {dislikes}, {comments}, {title}, {author_link}"
                 )
-                print(f"{current_id}, {views}, {likes}, {dislikes}, {comments}, {title}, {author_link}")
+                print(
+                    f"{current_id}, {views}, {likes}, {dislikes}, {comments}, {title}, {author_link}"
+                )
                 self.__processed_ids.add(current_id)
                 self.__main_queue.update(
                     filter(
