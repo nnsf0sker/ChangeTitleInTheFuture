@@ -1,8 +1,9 @@
 import logging
+import re
 import sys
 import time
 from logging import StreamHandler
-import re
+from random import choice
 
 from retry import retry
 from selenium import webdriver
@@ -38,7 +39,7 @@ class Crawler:
         step_number = 1
         warnings = 0
         while self.__main_queue:
-            video_id = self.__main_queue.pop()
+            video_id = pop_random_set_elem(self.__main_queue)
             url = f"https://youtube.com/watch?v={video_id}"
             logger.info(f"Processing {url} ...")
             html_raw = self.get_html_raw(url)
@@ -109,3 +110,9 @@ class Crawler:
         except Exception as e:
             self.__driver = Crawler.__set_driver()
             raise e
+
+def pop_random_set_elem(set_):
+    _tpl = tuple(set_)
+    elem = choice(_tpl)
+    set_.remove(elem)
+    return elem
