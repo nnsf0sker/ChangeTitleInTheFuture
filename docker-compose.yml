@@ -1,9 +1,15 @@
-version: "3.8"
+version: '3.9'
+
 services:
-  app:
+  db:
+    image: mysql
     restart: always
-    build:
-      context: .
-      dockerfile: Dockerfile
-    volume:
-      - ./db:/app/db
+    environment:
+      MYSQL_DATABASE: db
+      MYSQL_USER: user
+      MYSQL_PASSWORD: user_password
+      MYSQL_ROOT_PASSWORD: root_password
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./db:/var/lib/mysql

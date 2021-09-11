@@ -26,18 +26,19 @@ def reliable(func: Callable[..., ReturnType]):
 class Parser:
     views_xpath = "/html/body/ytd-app/div/ytd-page-manager/ytd-watch-flexy/div[5]/div[1]/div/div[6]/div[2]/ytd-video-primary-info-renderer/div/div/div[1]/div[1]/ytd-video-view-count-renderer/span[1]"
     date_xpath = "/html/body/ytd-app/div/ytd-page-manager/ytd-watch-flexy/div[5]/div[1]/div/div[6]/div[2]/ytd-video-primary-info-renderer/div/div/div[1]/div[2]/yt-formatted-string"
-    likes_xpath = "/html/body/ytd-app/div/ytd-page-manager/ytd-watch-flexy/div[5]/div[1]/div/div[6]/div[2]/ytd-video-primary-info-renderer/div/div/div[3]/div/ytd-menu-renderer/div[2]/ytd-toggle-button-renderer[1]/a/yt-formatted-string"
-    dislikes_xpath = "/html/body/ytd-app/div/ytd-page-manager/ytd-watch-flexy/div[5]/div[1]/div/div[6]/div[2]/ytd-video-primary-info-renderer/div/div/div[3]/div/ytd-menu-renderer/div[2]/ytd-toggle-button-renderer[2]/a/yt-formatted-string"
+    likes_xpath = "/html/body/ytd-app/div/ytd-page-manager/ytd-watch-flexy/div[5]/div[1]/div/div[6]/div[2]/ytd-video-primary-info-renderer/div/div/div[3]/div/ytd-menu-renderer/div/ytd-toggle-button-renderer[1]/a/yt-formatted-string"
+    dislikes_xpath = "/html/body/ytd-app/div/ytd-page-manager/ytd-watch-flexy/div[5]/div[1]/div/div[6]/div[2]/ytd-video-primary-info-renderer/div/div/div[3]/div/ytd-menu-renderer/div/ytd-toggle-button-renderer[2]/a/yt-formatted-string"
     comments_xpath = "/html/body/ytd-app/div/ytd-page-manager/ytd-watch-flexy/div[5]/div[1]/div/ytd-comments/ytd-item-section-renderer/div[1]/ytd-comments-header-renderer/div[1]/h2/yt-formatted-string/span[1]"
     author_xpath = "/html/body/ytd-app/div/ytd-page-manager/ytd-watch-flexy/div[5]/div[1]/div/div[7]/div[2]/ytd-video-secondary-info-renderer/div/div/ytd-video-owner-renderer/div[1]/ytd-channel-name/div/div/yt-formatted-string/a"
     title_xpath = "/html/body/ytd-app/div/ytd-page-manager/ytd-watch-flexy/div[5]/div[1]/div/div[6]/div[2]/ytd-video-primary-info-renderer/div/h1/yt-formatted-string"
+   #title_xpath = "/html/body/ytd-app/div/ytd-page-manager/ytd-watch-flexy/div[5]/div[1]/div/div[6]/div[2]/ytd-video-primary-info-renderer/div/h1/yt-formatted-string"
 
     @staticmethod
     def parse(html_raw: str) -> Dict:
         html_tree = html.fromstring(html_raw)
         return {
             "title": Parser.get_title(html_tree),
-            "author_link": Parser.get_author(html_tree),
+            "author_id": Parser.get_author(html_tree),
             "views": Parser.get_views(html_tree),
             "comments": Parser.get_comments(html_tree),
             "date": Parser.get_date(html_tree),
@@ -58,13 +59,15 @@ class Parser:
     @reliable
     def get_author(html_tree: HtmlElement) -> str:
         author_tag = Parser.__get_tag_by_xpath(html_tree, Parser.author_xpath)
-        author = author_tag.attrib["href"]
-        return author
+        author_link = author_tag.attrib["href"]
+        author_id = author_link.split("channel/")[1].strip("/")
+        return author_id
 
     @staticmethod
     @reliable
     def get_title(html_tree: HtmlElement) -> str:
         title_tag = Parser.__get_tag_by_xpath(html_tree, Parser.title_xpath)
+        "".join((tag.text for tag in title_tag))
         title = title_tag.text
         return title
 
@@ -81,8 +84,8 @@ class Parser:
     def get_date(html_tree: HtmlElement) -> str:
         date_tag = Parser.__get_tag_by_xpath(html_tree, Parser.date_xpath)
         date_raw = date_tag.text
-        # TODO: Доделать обработку теста
-        return date_raw
+        # TODO: Доделать обработку даты (превращение текста в дату)
+        return date_raw[-24:]
 
     @staticmethod
     @reliable
